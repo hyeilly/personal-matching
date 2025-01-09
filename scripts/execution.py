@@ -2,6 +2,9 @@ from scripts.data_processing import *
 import os
 from dotenv import load_dotenv
 
+from sentence_transformers import SentenceTransformer
+import pandas as pd
+
 load_dotenv()
 
 # MongoDB settings
@@ -12,15 +15,18 @@ def run_etl_pipeline(source_db_name, source_collection_name, target_db_name, tar
 
     print("Extract")
     raw_data = fetch_data_from_mongo(source_db_name, source_collection_name, query)
-    print(raw_data)
+    print("Transforming data...")
+    transformed_data = transform_data(raw_data)
 
-    # print("Transforming data...")
-    # transformed_data = transform_data(raw_data)
-    #
-    # print("Loading data into target MongoDB...")
-    # save_to_mongo(target_db_name, target_collection_name, transformed_data)
-    #
-    # print("ETL pipeline completed.")
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+    for article in transformed_data:
+        article['embedding'] = model.encode(article['content'], convert_to_numpy=True)
+    df = pd.DataFrame(transformed_data)
+    replace_df = convert_numpy_to_list(df)
+    input_data = replace_df.to_dict(orient='records')
+
+    save_to_mongo(target_db_name, target_collection_name, input_data)
+    print("ETL pipeline completed.")
 
 if __name__ == "__main__":
     SOURCE_DB = "newsapp_renew"
