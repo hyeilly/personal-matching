@@ -1,6 +1,7 @@
 from config.db import MongoDB
 from scripts.utils import *
 import numpy as np
+from datetime import datetime
 
 def fetch_data_from_mongo(source_db_name, source_collection_name, query=None):
     query = query or {}
@@ -16,11 +17,13 @@ def transform_data(raw_data):
     for data in raw_data:
         contents_data = data.get("contents", [])
         replace_contents = clean_text(contents_data.get("body", "no contents"))
+
         transformed.append({
             "id": data.get("articleId", 0),
             "title": contents_data.get("title", "Untitled"),
             "content": replace_contents,
-            "source": data.get("svcUrl", "")
+            "source": data.get("svcUrl", ""),
+            "updated_at": datetime.now()
         })
     return transformed
 

@@ -6,3 +6,6 @@
   conda create -n personal-matching python=3.12
   conda activate personal-matching
   ```
+  
+- 임베딩 테스트 데이터 추가
+  - `python -m scripts.execution.py`
