@@ -38,7 +38,7 @@ MONGODB_COLLECTION_USER=your_database_collection_name_for_user
 ### 프로그램 실행
 1. 임베딩 테스트 데이터 추가
 ```bash
-python -m scripts.execution.py
+python -m scripts.execution
 ```
 
 2. LLM 프로그램 실행
