@@ -34,6 +34,7 @@ def run_etl_user_pipeline(source_db_name, source_collection_name, target_db_name
     print("Transforming data...")
     transformed_data = transform_user_data(raw_data)
     save_to_mongo(target_db_name, target_collection_name, transformed_data)
+    # delete_all_from_mongo(target_db_name, target_collection_name)
     print("ETL pipeline completed.")
 
 if __name__ == "__main__":

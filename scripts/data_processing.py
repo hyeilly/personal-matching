@@ -17,7 +17,7 @@ def fetch_user_data_from_mongo(source_db_name, source_collection_name, query=Non
     with MongoDB(db_name=source_db_name) as db_client:
         collection = db_client[source_collection_name]
         results = collection.find(query, {'h_id':1, 'h_id_media':1, 'tags.id': 1, 'tags.media': 1, 'scraps.id': 1, 'scraps.media': 1, 'reporters.id': 1})
-        limit_results = results.sort("created_at", -1).limit(100)
+        limit_results = results.sort("created_at", -1).limit(300)
         documents = list(limit_results)
     return documents
 
@@ -66,3 +66,9 @@ def save_to_mongo(target_db_name, target_collection_name, data):
         collection = db_client[target_collection_name]
         result = collection.insert_many(data)
         print(f"Inserted {len(result.inserted_ids)} documents into '{target_collection_name}' collection.")
+
+def delete_all_from_mongo(target_db_name, target_collection_name):
+    with MongoDB(db_name=target_db_name) as db_client:
+        collection = db_client[target_collection_name]
+        result = collection.delete_many({})
+        print(f"Deleted {result.deleted_count} documents from '{target_collection_name}' collection.")
